@@ -1,0 +1,6 @@
+{
+  "name": "SoundSpot",
+  "description": "A Spotify-like music streaming client with AI recommendations powered by Gemini and robust offline playback cache capabilities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
