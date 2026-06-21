@@ -136,6 +136,9 @@ class MusicViewModel(private val repository: MusicRepository) : ViewModel() {
             try {
                 val results = repository.searchYouTube(q)
                 _elasticSearchResults.value = results
+                if (results.isNotEmpty()) {
+                    viewModelScope.launch { repository.prefetchStreams(results.take(4)) }
+                }
                 if (results.isEmpty()) {
                     _elasticSearchError.value = "No YouTube results found. Check your connection and try again."
                 }
