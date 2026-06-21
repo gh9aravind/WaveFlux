@@ -120,7 +120,11 @@ class MusicRepository(
         }
         track.streamUrl
     }
-
+/** Pre-resolves stream URLs for upcoming tracks in the background, before the user taps play. */
+    suspend fun prefetchStreams(tracks: List<Track>) = withContext(Dispatchers.IO) {
+        val videoIds = tracks.mapNotNull { it.youtubeVideoId }
+        com.example.data.youtube.YouTubeMusicService.prefetch(videoIds)
+    }
     /**
      * Toggles favorite status for [track], inserting it into the local database
      * first if it doesn't exist yet (e.g. a track that only came from a YouTube
