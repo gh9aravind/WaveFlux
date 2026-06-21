@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit
  */
 object YouTubeMusicService {
 
+    private val streamCache = java.util.concurrent.ConcurrentHashMap<String, Pair<String, Long>>()
+    private const val CACHE_TTL_MS = 4 * 60 * 60 * 1000L // 4 hours
     @Volatile
     private var initialized = false
 
