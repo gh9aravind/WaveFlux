@@ -279,13 +279,12 @@ class MusicViewModel(
     }
     fun seekTo(positionMs: Int) {
         try {
-            mediaPlayer?.seekTo(positionMs)
+            controller?.seekTo(positionMs.toLong())
             _playbackPosition.value = positionMs
         } catch (e: Exception) {
             Log.e(TAG, "Error seeking playback position", e)
         }
     }
-
     fun playNext() {
         val queue = _playQueue.value
         val current = _currentTrack.value
