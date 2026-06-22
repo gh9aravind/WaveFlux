@@ -46,8 +46,7 @@ class MainActivity : ComponentActivity() {
         // 1. Core State & Storage Initialization
         val database = MusicDatabase.getDatabase(applicationContext)
         val repository = MusicRepository(applicationContext, database.musicDao())
-        val viewModel = ViewModelProvider(this, MusicViewModel.Factory(repository))[MusicViewModel::class.java]
-
+        val viewModel = ViewModelProvider(this, MusicViewModel.Factory(repository, applicationContext))[MusicViewModel::class.java]
         setContent {
             MyApplicationTheme {
                 var isPlayerExpanded by remember { mutableStateOf(false) }
