@@ -225,7 +225,6 @@ class MusicViewModel(
 
     private suspend fun playTrackContent(track: Track) {
         try {
-            setupMediaPlayer()
             _isPlaying.value = false
 
             // Resolve a fresh playable URL right before playing. For YouTube
@@ -237,22 +236,28 @@ class MusicViewModel(
                 return
             }
 
-            mediaPlayer?.apply {
-                reset()
-                setDataSource(dataSource)
-                prepareAsync()
-                setOnPreparedListener {
-                    start()
-                    _isPlaying.value = true
-                    _trackDuration.value = duration
-                    startProgressTracking()
+            val mediaItem = MediaItem.Builder()
+                .setUri(dataSource)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(track.title)
+                        .setArtist(track.artist)
+                        .apply { track.thumbnailUrl?.let { setArtworkUri(android.net.Uri.parse(it)) } }
+                        .build()
+                )
+                .build()
+
+            withContext(Dispatchers.Main) {
+                controller?.apply {
+                    setMediaItem(mediaItem)
+                    prepare()
+                    play()
                 }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error playing song: ${track.title}", e)
         }
     }
-
     fun togglePlayPause() {
         val player = mediaPlayer ?: return
         try {
