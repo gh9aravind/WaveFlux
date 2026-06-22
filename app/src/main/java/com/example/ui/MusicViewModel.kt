@@ -1,23 +1,30 @@
 package com.example.ui
 
+import android.content.ComponentName
 import android.content.Context
-import android.media.MediaPlayer
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import com.example.data.api.GeminiRecommendationService
 import com.example.data.api.RecommendedSong
 import com.example.data.model.Track
 import com.example.data.repository.MusicRepository
+import com.example.playback.PlaybackService
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 class MusicViewModel(private val repository: MusicRepository) : ViewModel() {
     private val TAG = "MusicViewModel"
 
