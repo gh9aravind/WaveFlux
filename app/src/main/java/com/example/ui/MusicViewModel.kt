@@ -468,16 +468,19 @@ class MusicViewModel(
     override fun onCleared() {
         super.onCleared()
         stopProgressTracking()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        controllerFuture?.let { MediaController.releaseFuture(it) }
+        controller = null
     }
 
     // --- ViewModel Factory ---
-    class Factory(private val repository: MusicRepository) : ViewModelProvider.Factory {
+    class Factory(
+        private val repository: MusicRepository,
+        private val appContext: Context
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MusicViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return MusicViewModel(repository) as T
+                return MusicViewModel(repository, appContext) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
