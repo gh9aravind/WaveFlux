@@ -223,36 +223,7 @@ class MusicViewModel(
         }
     }
 
-    private suspend fun playTrackContent(track: Track) {
-        try {
-            setupMediaPlayer()
-            _isPlaying.value = false
-
-            // Resolve a fresh playable URL right before playing. For YouTube
-            // tracks this performs a network extraction since the signed
-            // stream URLs expire after a few hours and can't be cached.
-            val dataSource = repository.resolvePlayableUrl(track)
-            if (dataSource == null) {
-                Log.e(TAG, "Could not resolve a playable stream for ${track.title}")
-                return
-            }
-
-            mediaPlayer?.apply {
-                reset()
-                setDataSource(dataSource)
-                prepareAsync()
-                setOnPreparedListener {
-                    start()
-                    _isPlaying.value = true
-                    _trackDuration.value = duration
-                    startProgressTracking()
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error playing song: ${track.title}", e)
-        }
-    }
-
+   private suspend fun playTrackContent(track: Track) { 
     fun togglePlayPause() {
         val player = mediaPlayer ?: return
         try {
