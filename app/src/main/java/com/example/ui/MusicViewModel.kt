@@ -25,12 +25,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-class MusicViewModel(private val repository: MusicRepository) : ViewModel() {
+class MusicViewModel(
+    private val repository: MusicRepository,
+    private val appContext: Context
+) : ViewModel() {
     private val TAG = "MusicViewModel"
 
-    private var mediaPlayer: MediaPlayer? = null
+    private var controller: MediaController? = null
+    private var controllerFuture: ListenableFuture<MediaController>? = null
     private var progressTrackingJob: Job? = null
-
     // --- Database Flows ---
     val allTracks: StateFlow<List<Track>> = repository.allTracks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
