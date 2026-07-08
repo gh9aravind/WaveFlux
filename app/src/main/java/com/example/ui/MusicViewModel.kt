@@ -447,6 +447,9 @@ class MusicViewModel(
         }
     }
 
+   private val _recommendedTracks = MutableStateFlow<List<Track?>>(emptyList())
+    val recommendedTracks: StateFlow<List<Track?>> = _recommendedTracks.asStateFlow()
+
     // --- Gemini-Driven Recommendation Logic ---
     fun requestRecommendations(context: Context) {
         val vibe = _currentVibeText.value.trim()
@@ -454,30 +457,22 @@ class MusicViewModel(
 
         _isLoadingRecommendations.value = true
         _recommendationError.value = null
+        _aiRecommendations.value = emptyList()
+        _recommendedTracks.value = emptyList()
 
         viewModelScope.launch {
             try {
                 val recommendations = GeminiRecommendationService.getRecommendations(vibe)
                 _aiRecommendations.value = recommendations
 
-                // Map recommendations into Room database custom tracks
-                recommendations.forEachIndexed { idx, recommendedSong ->
-                    // Generate a standard test stream address or loop for simulated plays
-                    val songIndex = (idx % 6) + 1
-                    val customId = "ai-${recommendedSong.title.hashCode()}"
-                    
-                    val customTrack = Track(
-                        id = customId,
-                        title = recommendedSong.title,
-                        artist = recommendedSong.artist,
-                        streamUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-$songIndex.mp3",
-                        genre = recommendedSong.genre.substring(0, 1).uppercase() + recommendedSong.genre.substring(1),
-                        durationMs = 280000L + (idx * 15000), // descriptive mock durations
-                        vibeCode = recommendedSong.genre.lowercase()
-                    )
-                    repository.insertCustomTrack(customTrack)
+                // For each Gemini-suggested song, look it up on YouTube so it's
+                // actually playable instead of pointing at a fake sample file.
+                val resolvedTracks = recommendations.map { song ->
+                    val query = "${song.title} ${song.artist}"
+                    repository.searchYouTube(query).firstOrNull()
                 }
-                
+                _recommendedTracks.value = resolvedTracks
+
             } catch (e: Exception) {
                 _recommendationError.value = e.message ?: "Failed querying Gemini music service."
                 Log.e(TAG, "Failed recommending music: ", e)
