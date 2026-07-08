@@ -161,11 +161,33 @@ class MusicViewModel(
         }
     }
 
+    private val _trendingTracks = MutableStateFlow<List<Track>>(emptyList())
+    val trendingTracks: StateFlow<List<Track>> = _trendingTracks.asStateFlow()
+
+    private val _hipHopTracks = MutableStateFlow<List<Track>>(emptyList())
+    val hipHopTracks: StateFlow<List<Track>> = _hipHopTracks.asStateFlow()
+
+    private val _melodyTracks = MutableStateFlow<List<Track>>(emptyList())
+    val melodyTracks: StateFlow<List<Track>> = _melodyTracks.asStateFlow()
+
     init {
         viewModelScope.launch {
             repository.preloadDefaultTracksIfEmpty()
         }
         initController()
+        loadHomeCategories()
+    }
+
+    private fun loadHomeCategories() {
+        viewModelScope.launch {
+            _trendingTracks.value = repository.searchYouTube("trending songs 2026")
+        }
+        viewModelScope.launch {
+            _hipHopTracks.value = repository.searchYouTube("hip hop songs")
+        }
+        viewModelScope.launch {
+            _melodyTracks.value = repository.searchYouTube("melody songs")
+        }
     }
 
     private fun initController() {
