@@ -96,8 +96,8 @@ class MainActivity : ComponentActivity() {
                                     when (activeTab) {
                                         "home" -> HomeScreen(viewModel = viewModel)
                                         "search" -> SearchScreen(viewModel = viewModel)
-                                        "recommend" -> RecommendScreen(viewModel = viewModel)
                                         "library" -> LibraryScreen(viewModel = viewModel)
+                                        else -> HomeScreen(viewModel = viewModel)
                                     }
                                 }
 
