@@ -175,7 +175,8 @@ fun LibraryScreen(
                 if (allPlaylists.isEmpty()) {
                     EmptyState(
                         title = "No playlists yet!",
-                        subtitle = "Create one and start adding your favorite tracks."
+                        subtitle = "Create one and start adding your favorite tracks.",
+                        modifier = Modifier.weight(1f)
                     )
                 } else {
                     LazyColumn(
