@@ -4,9 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.data.model.Playlist
+import com.example.data.model.PlaylistTrackCrossRef
 import com.example.data.model.Track
 
-@Database(entities = [Track::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Track::class, Playlist::class, PlaylistTrackCrossRef::class],
+    version = 2,
+    exportSchema = false
+)
 abstract class MusicDatabase : RoomDatabase() {
     abstract fun musicDao(): MusicDao
 
