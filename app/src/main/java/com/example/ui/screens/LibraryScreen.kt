@@ -86,7 +86,8 @@ fun LibraryScreen(
             if (selectedPlaylistTracks.isEmpty()) {
                 EmptyState(
                     title = "This playlist is empty",
-                    subtitle = "Add songs to it using the + icon on any track."
+                    subtitle = "Add songs to it using the + icon on any track.",
+                    modifier = Modifier.weight(1f)
                 )
             } else {
                 LazyColumn(
