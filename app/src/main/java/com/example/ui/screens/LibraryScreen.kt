@@ -198,7 +198,8 @@ fun LibraryScreen(
                 if (activeDisplayList.isEmpty()) {
                     EmptyState(
                         title = if (selectedSubTab == 0) "Your liked songs list is empty!" else "No downloaded songs!",
-                        subtitle = "Enjoy and save tracks from Home or Search."
+                        subtitle = "Enjoy and save tracks from Home or Search.",
+                        modifier = Modifier.weight(1f)
                     )
                 } else {
                     LazyColumn(
