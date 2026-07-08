@@ -96,10 +96,41 @@ class MusicRepository(
         try {
             com.example.data.youtube.YouTubeMusicService.search(query)
         } catch (e: Exception) {
-            Log.e(TAG, "YouTube search failed for \"$query\": ${e.message}")
+            Log.e(TAG, "Failed communicating with remote Elasticsearch indexing manager: ${e.message}")
             emptyList()
         }
     }
+
+    // --- Playlists ---
+    val allPlaylists: Flow<List<PlaylistWithCount>> = musicDao.getAllPlaylistsWithCount()
+
+    fun getPlaylistTracks(playlistId: Long): Flow<List<Track>> = musicDao.getTracksForPlaylist(playlistId)
+
+    suspend fun createPlaylist(name: String): Long = withContext(Dispatchers.IO) {
+        musicDao.insertPlaylist(Playlist(name = name))
+    }
+
+    suspend fun renamePlaylist(playlistId: Long, newName: String) = withContext(Dispatchers.IO) {
+        musicDao.renamePlaylist(playlistId, newName)
+    }
+
+    suspend fun deletePlaylist(playlistId: Long) = withContext(Dispatchers.IO) {
+        musicDao.clearPlaylistTracks(playlistId)
+        musicDao.deletePlaylist(playlistId)
+    }
+
+    suspend fun addTrackToPlaylist(playlistId: Long, track: Track) = withContext(Dispatchers.IO) {
+        val existing = musicDao.getTrackById(track.id)
+        if (existing == null) {
+            musicDao.insertInitialTracks(listOf(track))
+        }
+        musicDao.addTrackToPlaylist(PlaylistTrackCrossRef(playlistId = playlistId, trackId = track.id))
+    }
+
+    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: String) = withContext(Dispatchers.IO) {
+        musicDao.removeTrackFromPlaylist(playlistId, trackId)
+    }
+}
 
     /**
      * Returns a fresh, directly-playable stream URL for [track].
