@@ -111,6 +111,7 @@ dependencies {
   implementation(libs.play.services.cast.framework)
   implementation(libs.androidx.mediarouter)
   implementation(libs.androidx.appcompat)
+  implementation(libs.androidx.fragment)
   coreLibraryDesugaring(libs.desugar.jdk.libs)
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
