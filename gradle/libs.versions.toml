@@ -40,6 +40,8 @@ firebaseBom = "34.12.0"
 secretsGradlePlugin = "2.0.1"
 newpipeExtractor = "v0.26.3"
 desugarJdkLibs = "2.0.4"
+mediaCast = "1.8.0"
+playServicesCast = "21.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
