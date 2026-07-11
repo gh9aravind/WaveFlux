@@ -79,6 +79,9 @@ class MusicViewModel(
     private val _trackDuration = MutableStateFlow(0)
     val trackDuration: StateFlow<Int> = _trackDuration.asStateFlow()
 
+    private val _audioQualityInfo = MutableStateFlow<String?>(null)
+    val audioQualityInfo: StateFlow<String?> = _audioQualityInfo.asStateFlow()
+
     private val _isShuffleEnabled = MutableStateFlow(false)
     val isShuffleEnabled: StateFlow<Boolean> = _isShuffleEnabled.asStateFlow()
 
