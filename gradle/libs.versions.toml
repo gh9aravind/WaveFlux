@@ -42,6 +42,7 @@ newpipeExtractor = "v0.26.3"
 desugarJdkLibs = "2.0.4"
 mediaCast = "1.8.0"
 playServicesCast = "21.5.0"
+mediaRouter = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -95,6 +96,7 @@ newpipe-extractor = { group = "com.github.teamnewpipe", name = "NewPipeExtractor
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugarJdkLibs" }
 media3-cast = { module = "androidx.media3:media3-cast", version.ref = "mediaCast" }
 play-services-cast-framework = { module = "com.google.android.gms:play-services-cast-framework", version.ref = "playServicesCast" }
+androidx-mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediaRouter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
