@@ -107,6 +107,8 @@ dependencies {
   implementation(libs.newpipe.extractor)
   implementation("androidx.media3:media3-exoplayer:1.4.1")
   implementation("androidx.media3:media3-session:1.4.1")
+  implementation(libs.media3.cast)
+  implementation(libs.play.services.cast.framework)
   coreLibraryDesugaring(libs.desugar.jdk.libs)
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
