@@ -246,6 +246,10 @@ class MusicViewModel(
                         _isPlaying.value = false
                         stopProgressTracking()
                     }
+
+                    override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+                        updateAudioQualityInfo(tracks)
+                    }
                 })
             } catch (e: Exception) {
                 Log.e(TAG, "Failed connecting to PlaybackService", e)
