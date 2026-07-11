@@ -19,10 +19,13 @@ object CrashHandler {
                 throwable.printStackTrace(PrintWriter(sw))
                 val trace = sw.toString()
 
+                // Use commit() (synchronous), not apply() (async) - the
+                // process gets killed right after this, so an async write
+                // could be lost in the race, leaving "no crash details".
                 app.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     .edit()
                     .putString(KEY_LAST_CRASH, trace)
-                    .apply()
+                    .commit()
 
                 val intent = Intent(app, CrashActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
