@@ -290,6 +290,10 @@ class MusicViewModel(
                 override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                     Log.e(TAG, "Cast player error: ${error.message}", error)
                 }
+
+                override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+                    updateAudioQualityInfo(tracks)
+                }
             })
 
             context.sessionManager.addSessionManagerListener(
