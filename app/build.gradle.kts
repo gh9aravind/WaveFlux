@@ -104,6 +104,7 @@ dependencies {
   // implementation(libs.play.services.location)
   implementation(libs.retrofit)
   implementation(libs.coil.compose)
+  implementation("androidx.palette:palette-ktx:1.0.0")
   implementation(libs.newpipe.extractor)
   implementation("androidx.media3:media3-exoplayer:1.4.1")
   implementation("androidx.media3:media3-session:1.4.1")
