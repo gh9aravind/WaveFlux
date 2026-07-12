@@ -168,4 +168,58 @@ object YouTubeMusicService {
             }
         }
     }
+
+    /** Searches YouTube Music albums (e.g. movie soundtracks) matching [query]. */
+    suspend fun searchAlbums(query: String, limit: Int = 20): List<AlbumResult> = withContext(Dispatchers.IO) {
+        ensureInitialized()
+        try {
+            val extractor = ServiceList.YouTube.getSearchExtractor(query, listOf("music_albums"), "")
+            extractor.fetchPage()
+            extractor.initialPage.items
+                .filterIsInstance<PlaylistInfoItem>()
+                .take(limit)
+                .map { it.toAlbumResult() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    /** Searches YouTube Music playlists matching [query]. */
+    suspend fun searchPlaylists(query: String, limit: Int = 20): List<AlbumResult> = withContext(Dispatchers.IO) {
+        ensureInitialized()
+        try {
+            val extractor = ServiceList.YouTube.getSearchExtractor(query, listOf("music_playlists"), "")
+            extractor.fetchPage()
+            extractor.initialPage.items
+                .filterIsInstance<PlaylistInfoItem>()
+                .take(limit)
+                .map { it.toAlbumResult() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun PlaylistInfoItem.toAlbumResult(): AlbumResult {
+        return AlbumResult(
+            playlistUrl = this.url,
+            title = this.name ?: "Unknown",
+            subtitle = this.uploaderName ?: "",
+            thumbnailUrl = this.thumbnails.maxByOrNull { it.height * it.width }?.url
+        )
+    }
+
+    /** Loads every track inside an album/playlist (e.g. a full movie's soundtrack). */
+    suspend fun getPlaylistTracks(playlistUrl: String, limit: Int = 100): List<Track> = withContext(Dispatchers.IO) {
+        ensureInitialized()
+        try {
+            val extractor = ServiceList.YouTube.getPlaylistExtractor(playlistUrl)
+            extractor.fetchPage()
+            extractor.initialPage.items
+                .filterIsInstance<StreamInfoItem>()
+                .take(limit)
+                .mapNotNull { it.toTrackOrNull() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }
