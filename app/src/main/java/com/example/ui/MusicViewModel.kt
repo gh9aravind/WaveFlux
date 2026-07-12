@@ -160,10 +160,57 @@ class MusicViewModel(
         updateApiToken("unlimited_premium_high_throughput_access_token")
     }
 
+    // --- Category Search (Songs / Albums / Playlists) ---
+    private val _searchCategory = MutableStateFlow("all") // "all", "songs", "albums", "playlists"
+    val searchCategory: StateFlow<String> = _searchCategory.asStateFlow()
+
+    fun setSearchCategory(category: String) {
+        _searchCategory.value = category
+    }
+
+    private val _albumResults = MutableStateFlow<List<AlbumResult>>(emptyList())
+    val albumResults: StateFlow<List<AlbumResult>> = _albumResults.asStateFlow()
+
+    private val _isLoadingAlbums = MutableStateFlow(false)
+    val isLoadingAlbums: StateFlow<Boolean> = _isLoadingAlbums.asStateFlow()
+
+    private val _playlistResults = MutableStateFlow<List<AlbumResult>>(emptyList())
+    val playlistResults: StateFlow<List<AlbumResult>> = _playlistResults.asStateFlow()
+
+    private val _isLoadingPlaylists = MutableStateFlow(false)
+    val isLoadingPlaylists: StateFlow<Boolean> = _isLoadingPlaylists.asStateFlow()
+
+    private val _openAlbum = MutableStateFlow<AlbumResult?>(null)
+    val openAlbum: StateFlow<AlbumResult?> = _openAlbum.asStateFlow()
+
+    private val _albumTracks = MutableStateFlow<List<Track>>(emptyList())
+    val albumTracks: StateFlow<List<Track>> = _albumTracks.asStateFlow()
+
+    private val _isLoadingAlbumTracks = MutableStateFlow(false)
+    val isLoadingAlbumTracks: StateFlow<Boolean> = _isLoadingAlbumTracks.asStateFlow()
+
+    /** Opens an album/playlist and loads its full tracklist (e.g. every song from a movie). */
+    fun openAlbum(album: AlbumResult) {
+        _openAlbum.value = album
+        _albumTracks.value = emptyList()
+        _isLoadingAlbumTracks.value = true
+        viewModelScope.launch {
+            _albumTracks.value = repository.getAlbumTracks(album.playlistUrl)
+            _isLoadingAlbumTracks.value = false
+        }
+    }
+
+    fun closeAlbum() {
+        _openAlbum.value = null
+        _albumTracks.value = emptyList()
+    }
+
     fun performElasticSearch(query: String) {
         val q = query.trim()
         if (q.isEmpty()) {
             _elasticSearchResults.value = emptyList()
+            _albumResults.value = emptyList()
+            _playlistResults.value = emptyList()
             _elasticSearchError.value = null
             return
         }
@@ -186,6 +233,28 @@ class MusicViewModel(
                 _elasticSearchResults.value = emptyList()
             } finally {
                 _isElasticSearchLoading.value = false
+            }
+        }
+
+        _isLoadingAlbums.value = true
+        viewModelScope.launch {
+            _albumResults.value = try {
+                repository.searchYouTubeAlbums(q)
+            } catch (e: Exception) {
+                emptyList()
+            } finally {
+                _isLoadingAlbums.value = false
+            }
+        }
+
+        _isLoadingPlaylists.value = true
+        viewModelScope.launch {
+            _playlistResults.value = try {
+                repository.searchYouTubePlaylists(q)
+            } catch (e: Exception) {
+                emptyList()
+            } finally {
+                _isLoadingPlaylists.value = false
             }
         }
     }
