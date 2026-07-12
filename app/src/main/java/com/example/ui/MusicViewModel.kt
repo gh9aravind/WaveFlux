@@ -446,34 +446,30 @@ class MusicViewModel(
     }
     fun playNext() {
         val queue = _playQueue.value
-        val current = _currentTrack.value
-        if (queue.isEmpty() || current == null) return
+        if (queue.isEmpty()) return
 
         val nextIndex = if (_isShuffleEnabled.value) {
             (0 until queue.size).random()
         } else {
-            val idx = queue.indexOfFirst { it.id == current.id }
-            if (idx == -1 || idx == queue.lastIndex) 0 else idx + 1
+            if (_currentQueueIndex.value >= queue.lastIndex) 0 else _currentQueueIndex.value + 1
         }
 
         val nextTrack = queue.getOrNull(nextIndex)
         if (nextTrack != null) {
+            _currentQueueIndex.value = nextIndex
             selectAndPlayTrack(nextTrack, queue)
         }
     }
 
     fun playPrevious() {
         val queue = _playQueue.value
-        val current = _currentTrack.value
-        if (queue.isEmpty() || current == null) return
+        if (queue.isEmpty()) return
 
-        val prevIndex = {
-            val idx = queue.indexOfFirst { it.id == current.id }
-            if (idx <= 0) queue.lastIndex else idx - 1
-        }()
+        val prevIndex = if (_currentQueueIndex.value <= 0) queue.lastIndex else _currentQueueIndex.value - 1
 
         val prevTrack = queue.getOrNull(prevIndex)
         if (prevTrack != null) {
+            _currentQueueIndex.value = prevIndex
             selectAndPlayTrack(prevTrack, queue)
         }
     }
