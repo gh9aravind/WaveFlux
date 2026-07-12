@@ -63,7 +63,15 @@ fun SearchScreen(
         OutlinedTextField(
             value = queryText,
             onValueChange = { queryText = it },
-            placeholder = { Text("What do you want to listen to?", color = Color.Gray) },
+            placeholder = {
+                Text(
+                    "What do you want to listen to?",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+            },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search icon", tint = Color.LightGray) },
             trailingIcon = {
                 if (queryText.isNotEmpty()) {
