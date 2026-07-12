@@ -96,6 +96,8 @@ class MusicViewModel(
         _playQueue.value = newQueue
     }
 
+    private val _currentQueueIndex = MutableStateFlow(0)
+
     // --- Downloading Map Progress States ---
     private val _downloadProgressMap = MutableStateFlow<Map<String, Float>>(emptyMap())
     val downloadProgressMap: StateFlow<Map<String, Float>> = _downloadProgressMap.asStateFlow()
