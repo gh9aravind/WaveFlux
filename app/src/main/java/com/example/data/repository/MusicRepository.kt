@@ -204,7 +204,10 @@ class MusicRepository(
         val destinationFile = File(downloadsDir, "${track.id}.mp3")
         Log.d(TAG, "Downloading track ${track.title} from $url to ${destinationFile.absolutePath}")
 
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder()
+            .url(url)
+            .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+            .build()
 
         try {
             okHttpClient.newCall(request).execute().use { response ->
